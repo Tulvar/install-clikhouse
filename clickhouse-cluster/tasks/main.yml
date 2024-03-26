@@ -1,0 +1,36 @@
+---
+- name: Install prerequisites
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - dirmngr
+
+- name: Add ClickHouse repository key
+  apt_key:
+    url: "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x8919F6BD2B48D754"
+    state: present
+
+- name: Add ClickHouse repository
+  apt_repository:
+    repo: "deb https://packages.clickhouse.com/deb stable main"
+    state: present
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install ClickHouse server and client
+  apt:
+    name: 
+      - clickhouse-server
+      - clickhouse-client
+    state: present
+
+- name: Start ClickHouse server service
+  service:
+    name: clickhouse-server
+    state: started
+    enabled: yes
